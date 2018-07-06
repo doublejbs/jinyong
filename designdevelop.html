@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+    body {
+        background-color: black;
+    }
+    
+    #stage {
+        margin-top: 50px;
+        margin-left: auto;
+        margin-right: auto;
+        width: 800px;
+        height: 600px;
+        perspective: 400px;
+        perspective-origin: center;
+        overflow: hidden;
+    }
+    
+    .board {
+        position: absolute;
+        display: flex;
+        width: 50px;
+        height: 50px;
+        align-items: center;
+        justify-content: center;
+        transform-origin: center;
+        transform-style: preserve-3d;
+        color: rgba(255, 255, 255, 0.9);
+        animation: anim 2s alternate infinite;
+    }
+    
+    @keyframes anim {
+        0% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+</style>
+<body>
+    <div id="stage"></div>
+</body>
+<script>
+    var str = '가나다라마바사아자차카타파하';
+    var stage = document.querySelector('#stage');
+    var theone;
+    for(var i = 0; i < 1000; i++) {
+        var div = document.createElement('div');
+        div.className = 'board';
+        div.textContent = '디자인';
+        if(i === 0) {
+            div.textContent = '개발';
+            div.style.color = 'cyan';
+            div.style.transition = '2s';
+            theone = div;
+        }
+        var x = Math.floor(Math.random() * 700);
+        var y = Math.floor(Math.random() * 500);
+        var z = -Math.floor(Math.random() * 300);
+        var rotY = Math.floor((Math.random() * 2 - 1) * 45) ;
+        div.style.transform = `translate3d(${x}px,${y}px,${z}px) rotateY(${rotY}deg)`;
+        stage.appendChild(div);
+    }
+    
+    setInterval(function() {
+        var x = Math.floor(Math.random() * 700);
+        var y = Math.floor(Math.random() * 500);
+        var z = -Math.floor(Math.random() * 300);
+        var rotY = Math.floor((Math.random() * 2 - 1) * 45) ;
+        theone.style.transform = `translate3d(${x}px,${y}px,${z}px) rotateY(${rotY}deg)`;
+    }, 4000);
+</script>

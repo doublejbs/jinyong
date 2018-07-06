@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body {
+        background-color: rgb(32, 32, 32);
+      }
+      
+      .bar {
+        display: inline-block;
+        font-size: 30px;
+        padding: 10px;
+        color: white;
+        transition: 1s;
+      }
+      
+      .bar:hover {
+        transform: rotate(180deg);
+        cursor: crosshair;
+        font-size: 60px;
+      }
+    </style>
+  </head>
+  <body>
+  </body>
+  <script>
+    var poet = '내가그의이름을불러주기전에는그는다만하나의몸짓에지나지않았다.내가그의이름을불러주었을때그는나에게로와서꽃이되었다.내가그의이름을불러준것처럼나의이빛깔과향기(香氣)에알맞는누가나의이름을불러다오.그에게로가서나도그의꽃이되고싶다.우리들은모두무엇이되고싶다.너는나에게나는너에게잊혀지지않는하나의의미가되고싶다.';
+    
+    var random = function(min, max) {
+      return min + (max - min) * Math.random();
+    };
+    
+    var getRandomGrayColor = function() {
+      var gray = Math.floor(random(32, 64));
+      return 'rgb(' + gray + ',' + gray + ',' + gray + ')';  
+    };
+    
+    for(var i = 0; i < poet.length; i++) {
+      var d = document.createElement('div');
+      var text = poet[i];
+      d.textContent = text;
+      d.style['background-color'] = getRandomGrayColor();
+      d.className = 'bar';
+      document.body.appendChild(d);
+    }
+  </script>
+</html>

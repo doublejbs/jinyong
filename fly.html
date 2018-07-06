@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+  body {
+    margin: 0px;
+    overflow: hidden;
+  }
+  
+  canvas {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+  }
+</style>
+<body>
+  <div id="stage">
+    <canvas id="gl"></canvas>
+  </div>
+</body>
+<script id="gl_vs" type="x-shader">
+  attribute vec3 a_pos;
+  uniform mat4 u_proj;
+  uniform mat4 u_view;
+  uniform mat4 u_model;
+  varying vec4 v_pos;
+  void main() {
+    gl_Position = u_proj * u_view * u_model * vec4(a_pos, 1.0);
+    v_pos = gl_Position;
+  }
+</script>
+<script id="gl_fs" type="x-shader">
+  precision mediump float;
+  varying vec4 v_pos;
+  void main() {
+    float d = v_pos.z / v_pos.w;
+    gl_FragColor = vec4(vec3(pow(d, 5.0)), 1.0);
+  }
+</script>
+<script>
+  var vec3 = {};
+  vec3.add = function(a, b) {
+    return [a[0]+b[0], a[1]+b[1], a[2]+b[2]];
+  };
+  vec3.sub = function(a, b) {
+    return [a[0]-b[0], a[1]-b[1], a[2]-b[2]];
+  };
+  vec3.length = function(v) {
+    return Math.sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
+  };
+  vec3.dot = function(a, b) {
+    return a[0]*b[0] + a[1]*b[1] + a[2]*b[2];
+  };
+  vec3.normalize = function(v) {
+    var d = Math.sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
+    return d > 0 ? [v[0]/d, v[1]/d, v[2]/d] : v;
+  };
+  vec3.cross = function(a, b) {
+    return [
+      a[1]*b[2] - a[2]*b[1],
+      a[2]*b[0] - a[0]*b[2],
+      a[0]*b[1] - a[1]*b[0]
+    ];
+  };
+  
+  var mat4 = {};
+  mat4.perspective = function(fovy, aspect, near, far) {
+    var f = 1 / Math.tan(fovy * 0.5);
+    var nf = 1/ (near - far);
+    var m = [
+      f / aspect, 0, 0, 0,
+      0, f, 0, 0,
+      0, 0, (near + far) * nf, -1,
+      0, 0, 2 * near * far * nf, 0
+    ];
+    return m;
+  };
+  
+  mat4.lookAt = function(eye, center, up) {
+    var w = vec3.normalize(vec3.sub(eye, center));
+    var u = vec3.normalize(vec3.cross(up, w));
+    var v = vec3.normalize(vec3.cross(w, u));
+
+    return [
+      u[0], v[0], w[0], 0,
+      u[1], v[1], w[1], 0,
+      u[2], v[2], w[2], 0,
+      -vec3.dot(u,eye), -vec3.dot(v,eye), -vec3.dot(w,eye), 1
+    ];
+  };
+  
+  mat4.translateScale = function(trans, scale) {
+    return [
+      scale[0], 0, 0, 0,
+      0, scale[1], 0, 0,
+      0, 0, scale[2], 0,
+      trans[0], trans[1], trans[2], 1,
+    ];
+  };
+</script>
+<script>
+  var frameCount = 0;
+  var time = 0;
+  var eye = [0, 0, 5];
+    
+  var gl = document.querySelector('#gl').getContext('webgl');
+  gl.canvas.width = innerWidth;
+  gl.canvas.height = innerHeight;
+  gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+  gl.enable(gl.DEPTH_TEST);
+  
+  var ground_verts = [];
+  var ground_indices = [];
+  var nz = 1000;
+  var nx = 60;
+  var vcount = 0;
+  for(var i = 0; i < nz; i++) {
+    var fz = i / (nz - 1);
+    for(var j = 0; j < nx; j++) {
+      var fx = j / (nx - 1) * 2 - 1;
+      var x = fx * 5;
+      var y = Math.random() * 0.2 - Math.cos(fx * Math.PI * 0.5);
+      var z = -fz * 1000;
+      ground_verts.push(x, y, z);
+      vcount++;
+      if(j < nx - 1) {
+        ground_indices.push(vcount - 1, vcount);
+      }
+    }
+  }
+  
+  var ground_vbuff = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, ground_vbuff);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(ground_verts), gl.STATIC_DRAW);
+  
+  var ground_ibuff = gl.createBuffer();
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ground_ibuff);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(ground_indices), gl.STATIC_DRAW);
+  
+  var cube_verts = [
+    1, 1, -1,
+    -1, 1, -1,
+    1, -1, -1,
+    -1, -1, -1,
+    1, 1, 1,
+    -1, 1, 1,
+    1, -1, 1,
+    -1, -1, 1
+  ];
+  
+  var cube_indices = [
+    0, 1, 1, 3, 3, 2, 2, 0,
+    4, 5, 5, 7, 7, 6, 6, 4,
+    0, 4, 1, 5, 2, 6, 3, 7
+  ];
+  
+  var cubes = [];
+  for(var i = 0; i < 1000; i++) {
+    var cube = {};
+    cube.trans = [
+      (Math.random() * 2 - 1) * 4,
+      Math.random() * 4,
+      -Math.random() * 1000,
+    ];
+    cube.scale = [0.2, 0.2, 0.2];
+    cubes.push(cube);
+  };
+  
+  var cube_vbuff = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, cube_vbuff);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cube_verts), gl.STATIC_DRAW);
+  
+  var cube_ibuff = gl.createBuffer();
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cube_ibuff);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cube_indices), gl.STATIC_DRAW);
+  
+  var vs = gl.createShader(gl.VERTEX_SHADER);
+  gl.shaderSource(vs, document.querySelector('#gl_vs').textContent);
+  gl.compileShader(vs);
+  console.log(gl.getShaderInfoLog(vs));
+  
+  var fs = gl.createShader(gl.FRAGMENT_SHADER);
+  gl.shaderSource(fs, document.querySelector('#gl_fs').textContent);
+  gl.compileShader(fs);
+  console.log(gl.getShaderInfoLog(fs));
+  
+  var prog = gl.createProgram();
+  gl.attachShader(prog, vs);
+  gl.attachShader(prog, fs);
+  gl.linkProgram(prog);
+  console.log(gl.getProgramInfoLog(prog));
+  
+  var a_pos = gl.getAttribLocation(prog, 'a_pos');
+  var u_proj = gl.getUniformLocation(prog, 'u_proj');
+  var u_view = gl.getUniformLocation(prog, 'u_view');
+  var u_model = gl.getUniformLocation(prog, 'u_model');
+  
+  var proj = mat4.perspective(Math.PI / 4, gl.canvas.width / gl.canvas.height, 1, 1000);
+  var view, model;
+  
+  gl.enableVertexAttribArray(a_pos);
+  
+  var update = function() {
+    time = frameCount / 60;
+    var t = (time % 60) * 10;
+    eye[0] = 0;
+    eye[1] = 0.25 + (0.5 + 0.5 * Math.cos(time));
+    eye[2] = 5 - t;
+    var center = [
+      Math.sin(time), 
+      eye[1], 
+      eye[2] - t
+    ];
+    view = mat4.lookAt(eye, center, [0, 1, 0]);
+    frameCount++;
+  };
+    
+  var draw = function() {
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    
+    model = mat4.translateScale([0, 0, 0], [1, 1, 1]);
+    gl.useProgram(prog);
+    gl.uniformMatrix4fv(u_proj, false, proj);
+    gl.uniformMatrix4fv(u_view, false, view);
+    gl.uniformMatrix4fv(u_model, false, model);  
+    
+    gl.bindBuffer(gl.ARRAY_BUFFER, ground_vbuff);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ground_ibuff);
+    gl.vertexAttribPointer(a_pos, 3, gl.FLOAT, false, 0, 0);
+    gl.drawElements(gl.LINES, ground_indices.length, gl.UNSIGNED_SHORT, 0);
+    
+    gl.bindBuffer(gl.ARRAY_BUFFER, cube_vbuff);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cube_ibuff);
+    gl.vertexAttribPointer(a_pos, 3, gl.FLOAT, false, 0, 0);
+    for(var i = 0; i < cubes.length; i++) {
+      var cube = cubes[i];
+      model = mat4.translateScale(cube.trans, cube.scale);
+      gl.uniformMatrix4fv(u_model, false, model); 
+      gl.drawElements(gl.LINES, cube_indices.length, gl.UNSIGNED_SHORT, 0);
+    }
+  };
+    
+  var loop = function() {
+    update();
+    draw();
+    requestAnimationFrame(loop);
+  };
+    
+  loop();
+</script>

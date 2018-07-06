@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+  body {
+    background-color: black;
+  }
+</style>
+<body></body>
+<script id="vs" type="x-shader">
+  attribute vec3 a_pos;
+  uniform float u_time;
+  
+  void main() {
+    vec3 p = normalize(a_pos);
+    float r = length(a_pos);
+    p = p + vec3(sin(r * 3.14 + u_time) * 0.5, sin(r * 3.14 * 3.0 + u_time) * 0.5, sin(r * 3.14 * 30.0 + u_time) * 2.5 * cos(u_time));
+    vec3 pos = p + vec3(0.0, 0.0, -5.0 + sin(u_time));
+    float ar = 800.0 / 600.0;
+    float f = 1.0 / tan(3.141592 / 8.0);
+    float w = -pos.z;
+    gl_Position = vec4(vec3(pos.x * f / ar, pos.y * f, pos.z), w);
+    gl_PointSize = 1.0;
+  }
+</script>
+<script id="fs" type="x-shader">
+  precision mediump float;
+  
+  void main() {
+    gl_FragColor = vec4(1.0, 1.0, 1.0, 0.25);
+  }
+</script>
+
+<script>
+  var gl = document.createElement('canvas').getContext('webgl');
+  gl.canvas.width = 800;
+  gl.canvas.height = 600;
+  document.body.appendChild(gl.canvas);
+  gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+  gl.clearColor(0.0, 0.0, 0.0, 1.0);
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+  var frameCount = 0;
+  
+  var verts = [];
+  var nx = ny = nz = 80;
+  for(var z = 0; z < nz; z++) {
+    for(var y = 0; y < ny; y++) {
+        for(var x = 0; x < nx; x++) {
+          verts.push(x / (nx - 1) * 2 - 1, y / (ny - 1) * 2 - 1, z / (nz - 1) * 2 - 1);
+      }
+    }  
+  }
+  
+  var vb = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, vb);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(verts), gl.STATIC_DRAW);
+  
+  var vs = gl.createShader(gl.VERTEX_SHADER);
+  gl.shaderSource(vs, document.querySelector('#vs').textContent);
+  gl.compileShader(vs);
+  console.log(gl.getShaderInfoLog(vs));
+  
+  var fs = gl.createShader(gl.FRAGMENT_SHADER);
+  gl.shaderSource(fs, document.querySelector('#fs').textContent);
+  gl.compileShader(fs);
+  console.log(gl.getShaderInfoLog(fs));
+  
+  var prog = gl.createProgram();
+  gl.attachShader(prog, vs);
+  gl.attachShader(prog, fs);
+  gl.linkProgram(prog);
+  console.log(gl.getProgramInfoLog(prog));
+  
+  var a_pos = gl.getAttribLocation(prog, 'a_pos');
+  gl.enableVertexAttribArray(a_pos);
+  gl.vertexAttribPointer(a_pos, 3, gl.FLOAT, false, 0, 0);
+  
+  var u_time = gl.getUniformLocation(prog, 'u_time');
+  gl.useProgram(prog);
+    
+  var draw = function() {
+    var time = frameCount / 60;
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    
+    gl.uniform1f(u_time, time);
+    gl.drawArrays(gl.POINTS, 0, verts.length / 3);
+    
+    frameCount++;
+  };
+  
+  var loop = function() {
+    draw();
+    requestAnimationFrame(loop);
+  };
+  
+  loop();
+</script>

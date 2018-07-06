@@ -16,11 +16,12 @@ body{
 .card{
     display: inline-block;
     font-family: 'Inconsolata', monospace;
-    width: 330px;
-    height: 480px;
+    width: 25%;
+    height: 60%;
     left: 38%;
     position: absolute;
     top: 20%;
+    
     background-color: white;
     border-radius: 50px;
     box-shadow:  5px 5px black;
