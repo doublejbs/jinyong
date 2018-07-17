@@ -49,7 +49,6 @@ window.onload = function() {
     var distX = 0;
     var distY = 0;
     
-   
     canvas.addEventListener('mousedown', function(event){
         console.log('mousedown');
         var mx = event.clientX;
