@@ -214,6 +214,7 @@ function Rectangle() {
       rect.context.fillStyle = 'black';
       rect.context.fillRect(rect.x+rect.w-5, rect.y+rect.h-5,5,5);
       rect.context.stroke();
+      rect.context.closePath();
     };
 
 
@@ -243,6 +244,7 @@ function Ball() {
       // Draw Ball
       
       ball.context.beginPath();
+      ball.context.shadowBlur = 0;
       ball.context.fillStyle = ball.c;
       ball.context.strokeStyle = ball.c;
       ball.context.lineWidth = 0.5;
