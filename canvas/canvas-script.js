@@ -46,13 +46,17 @@ window.onload = function() {
     context.fill();
     rect.draw();
 
-    
+    var distX = 0;
+    var distY = 0;
     
    
     canvas.addEventListener('mousedown', function(event){
         console.log('mousedown');
         var mx = event.clientX;
         var my = event.clientY;
+        distX = mx - rect.x;
+        distY = my - rect.y;
+        
         
         if(rect.x < mx && mx < (rect.x + rect.w) && rect.y < my && my < (rect.y + rect.h)){
             move = true;
@@ -68,8 +72,8 @@ window.onload = function() {
         var pastY = rect.y;
             
         if(move){
-            rect.x = event.clientX - (rect.w/2);
-            rect.y = event.clientY - (rect.h/2);   
+            rect.x = event.clientX - distX;
+            rect.y = event.clientY - distY;   
         }
         var grd=context.createLinearGradient(rect.x+rect.w/2, rect.y+rect.h/2, endX1+rect.w/2, endY1+rect.w/2);
         context.clearRect(0,0,canvas.width,canvas.height);
