@@ -16,7 +16,7 @@ window.onload = function(){
         
         console.log('mousemove');
         console.log(context);
-        if(event.clientX%20 < 2){
+        if(event.clientX%100 < 10 || event.clientX%100>90){
             
         
         newBall = {
