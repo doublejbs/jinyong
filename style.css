@@ -14,18 +14,11 @@ body{
 
 
 .card{
-    display: inline-block;
+    margin: 0 auto;
     font-family: 'Inconsolata', monospace;
-    width: 25%;
-    height: 60%;
-    left: 38%;
-    position: absolute;
-    top: 20%;
-    
-    background-color: white;
-    border-radius: 50px;
-    box-shadow:  5px 5px black;
-    
+    width: 300px;;
+   
+    text-align: left;
 }
 .title{
     margin-top: 20px;
@@ -34,12 +27,16 @@ body{
 .description{
     margin-top: 20px;
     font-size: 20px;
+    margin-bottom: 10px;
 }
+
+
 .card li{
+    margin-top: 10px;
     list-style: none;
     right: 30px;
-    margin-top: 50px;
     font-size: 20px;
+    text-align: center;
 }
 .card a:link{
     text-decoration: none;
