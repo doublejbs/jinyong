@@ -19,7 +19,7 @@
   height: 100%;
   -webkit-transform-style: preserve-3d;
   transform-style: preserve-3d;
-  transition: 0.6s;
+  -webkit-transition: 0.6s;
   box-shadow: 0 6px 16px rgba(0,0,0,0.15);
   cursor: pointer;
   
@@ -27,6 +27,10 @@
 .front, .back{
     position: absolute;
     backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  -o-backface-visibility: hidden;
 }
 
 .photo img{
@@ -43,16 +47,16 @@
 }
 .back{
     position: relative;
-    transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg);
     
 }
 .container:hover .card{
-    transform: rotateY(180deg);
-    transition: 0.6s;
+    -webkit-transform: rotateY(180deg);
+    -webkit-transition: 0.6s;
 }
 .container:active .card{
-    transform: rotateY(180deg);
-    transition: 0.6s;
+    -webkit-transform: rotateY(180deg);
+    -webkit-transition: 0.6s;
 }
 .container:hover .front{
     z-index: 0;
