@@ -50,3 +50,28 @@ body{
     text-decoration: underline;
     color: darkgreen;
 }
+
+@media only screen and (max-width : 450px) {
+    .title{
+        font-size: 90px;
+    }
+    .card .description{
+        margin-top: 50px;
+    }
+    .card li{
+        margin-top: 50px;
+    }
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
