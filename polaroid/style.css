@@ -34,7 +34,6 @@
 
 .photo img{
     position: relative;
-    
     left: 10px;
     width: 380px;
     height: 350px;
@@ -73,6 +72,7 @@
     text-align: right;
 }
 
+
 .content-back{
     position: absolute;
     margin: 0 auto;
@@ -80,8 +80,20 @@
     height: 525px;
     left: 10px;
     top: 10px;
-    
     text-align: left;
 }
+
+@media(max-width: 480px){
+    body{
+        overflow-x: hidden;
+    }
+    
+}
+
+
+
+
+
+
 
 
