@@ -25,9 +25,9 @@ li{
     position: relative;
     border: 1px solid black;
     float: right;
-    width: 60%;
+    width: 800px;
     height: 100%;
-    right: 40px;
+    right: 30%;
 }
 
 @media only screen and (max-width : 450px) {
