@@ -4,8 +4,11 @@ window.onload = function() {
     var canvas = document.getElementById("mycanvas");
     var context = canvas.getContext("2d");
     
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    var content = document.querySelector('#content');
+    var conRect = content.getBoundingClientRect();
+    
+    canvas.width = 800;
+    canvas.height = window.innerHeight-30;
     /*
     //fill background
     context.fillStyle = '#8F4497';
@@ -111,8 +114,8 @@ window.onload = function() {
     
     canvas.addEventListener('mousedown', function(event){
         console.log('mousedown');
-        var mx = event.clientX;
-        var my = event.clientY;
+        var mx = event.clientX-conRect.left;
+        var my = event.clientY-conRect.top;
         distX = mx - rect.x;
         distY = my - rect.y;
         
@@ -136,15 +139,15 @@ window.onload = function() {
         var pastY = rect.y;
             
         if(move){
-            rect.x = event.clientX - distX;
-            rect.y = event.clientY - distY;   
+            rect.x = event.clientX-conRect.left - distX;
+            rect.y = event.clientY-conRect.top - distY;   
         }
         context.clearRect(0,0,canvas.width,canvas.height);
         rect.draw();
         
         if(resize){
-            rect.w = event.clientX - pastX;
-            rect.h = event.clientY - pastY;
+            rect.w = event.clientX-conRect.left - pastX;
+            rect.h = event.clientY-conRect.top - pastY;
             
         }
         

@@ -3,10 +3,12 @@ window.onload = function(){
     var canvas = document.getElementById('mycanvas');
     var context = canvas.getContext('2d');
       
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = 800;
+    canvas.height = window.innerHeight-30;
     
     var balls = [];
+    var content = document.querySelector('#content');
+    var conRect = content.getBoundingClientRect();
     
 
     
@@ -16,11 +18,11 @@ window.onload = function(){
         
         console.log('mousemove');
         console.log(context);
-        if(event.clientX%100 < 10){
+        if((event.clientX-conRect.left)%100 < 10){
             
         
         newBall = {
-          x:event.clientX+10,
+          x:(event.clientX-conRect.left)+10,
           y:0,
           r:50,
           c:getRandomColor(),

@@ -2,8 +2,8 @@ window.onload = function() {
     var canvas = document.getElementById('mycanvas');
     var context = canvas.getContext('2d');
     
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = 800;
+    canvas.height = window.innerHeight-30;
     
     
     

@@ -4,15 +4,18 @@ window.onload = function() {
     var canvas = document.getElementById("mycanvas");
     var context = canvas.getContext("2d");
     
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    var content = document.querySelector('#content');
+    var conRect = content.getBoundingClientRect();
+    
+    canvas.width = 800;
+    canvas.height = window.innerHeight-30;
     /*
     //fill background
     context.fillStyle = '#8F4497';
     context.fillRect(0,0,canvas.width,canvas.height);
     */
     
-
+    
     
     
     //draw rectangle
@@ -51,14 +54,16 @@ window.onload = function() {
     
     canvas.addEventListener('mousedown', function(event){
         console.log('mousedown');
-        var mx = event.clientX;
-        var my = event.clientY;
+        var mx = event.clientX-conRect.left;
+        var my = event.clientY-conRect.top;
         distX = mx - rect.x;
         distY = my - rect.y;
         
+        console.log(mx, rect.x);
         
         if(rect.x < mx && mx < (rect.x + rect.w) && rect.y < my && my < (rect.y + rect.h)){
             move = true;
+            
         }
         
     });
@@ -71,8 +76,8 @@ window.onload = function() {
         var pastY = rect.y;
             
         if(move){
-            rect.x = event.clientX - distX;
-            rect.y = event.clientY - distY;   
+            rect.x = event.clientX-conRect.left - distX;
+            rect.y = event.clientY-conRect.top - distY;   
         }
         var grd=context.createLinearGradient(rect.x+rect.w/2, rect.y+rect.h/2, endX1+rect.w/2, endY1+rect.w/2);
         context.clearRect(0,0,canvas.width,canvas.height);
