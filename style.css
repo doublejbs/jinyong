@@ -1,34 +1,51 @@
+*{
+    font-family: 'Inconsolata', monospace;
+}
+
+.container{
+    position: relative;
+    width: 1700px;
+    margin: 0 auto;
+}
 .card{
     position: relative;
-    left: 200px;
+    margin-left: 30px;
     height: 100%;
     width: auto;
     float: left;
     display: inline;
 }
 .title{
-    font-size: 40px;
+    font-size: 60px;
 }
 .description{
+    font-size: 30px;
     text-align: center;
 }
 .menu{
-    text-align: left;
+    text-decoration: none;
+    font-size: 30px;
+    text-align: center;
     margin-top: 50px;
 }
 li{
     list-style: none;
-}
-.project li{
-    list-style: circle
 }
 #content{
     position: relative;
     border: 1px solid black;
     width: 800px;
     height: 100%;
-    float: right;
+    float: left;
     display: inline;
+    margin-left: 30px;
+}
+.readme{
+    float: left;
+    width: 400px;
+    height: 955px;
+    border: 1px solid black;
+    margin-left: 30px;
 }
 
 @media only screen and (max-width : 450px) {
